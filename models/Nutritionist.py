@@ -1,9 +1,6 @@
 from models.Food import Food
 from models.User import User
-import sqlite3
-
-def get_db_connection():
-    return sqlite3.connect('database.db')
+from db import get_db_connection
 
 class Nutritionist:
     TABLE_NAME = "Nutritionist"
@@ -28,6 +25,7 @@ class Nutritionist:
 
     def dictionary(self):
         return {
+            
             "id": self.id,
             "name": self.name,
             "phone_number": self.phone_number,
@@ -44,6 +42,33 @@ class Nutritionist:
         cursor.execute(sql)
         conn.commit()
 
+
+
+    def update(self):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        sql = f"""
+            UPDATE {self.TABLE_NAME} SET name=?, phone_number=?, email=? WHERE id=?
+        """
+        cursor.execute(sql, (self.name, self.phone_number, self.email, self.id))
+        conn.commit()
+        print(f"{self.name} updated")
+
+    
+
+    def delete(self):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        sql = f"""
+            DELETE FROM {self.TABLE_NAME} WHERE id = ?
+        """
+        cursor.execute(sql, (self.id,))
+        conn.commit()
+        print(f"{self.name} deleted")
+
+    
+
+
     @classmethod
     def find(cls):
         conn = get_db_connection()
@@ -55,6 +80,7 @@ class Nutritionist:
         return [
             cls.row_to_instance(row).dictionary() for row in rows
         ]
+
 
     @classmethod
     def row_to_instance(cls, row):

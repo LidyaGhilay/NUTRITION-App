@@ -1,5 +1,3 @@
-from models.Food import Food
-from models.Nutritionist import Nutritionist
 import sqlite3
 
 def get_db_connection():
@@ -8,7 +6,7 @@ def get_db_connection():
 class User:
     TABLE_NAME = "userDetails"
 
-    def __init__(self, id, name, phone_number, age,Food_id):
+    def __init__(self, id, name, phone_number, age, Food_id):
         self.id = id
         self.name = name
         self.phone_number = phone_number
@@ -19,10 +17,10 @@ class User:
         conn = get_db_connection()
         cursor = conn.cursor()
         sql = f"""
-            INSERT INTO {self.TABLE_NAME} (name, phone_number, age)
-            VALUES (?, ?, ?)
+            INSERT INTO {self.TABLE_NAME} (name, phone_number, age, Food_id)
+            VALUES (?, ?, ?, ?)
         """
-        cursor.execute(sql, (self.name, self.phone_number, self.age))
+        cursor.execute(sql, (self.name, self.phone_number, self.age, self.Food_id))
         conn.commit()
         self.id = cursor.lastrowid
         return self
@@ -50,7 +48,7 @@ class User:
     def row_to_instance(cls, row):
         if row is None:
             return None
-        user = cls(None, row[1], row[2], row[3])
+        user = cls(None, row[1], row[2], row[3], row[4])
         user.id = row[0]
         return user
 
@@ -63,11 +61,33 @@ class User:
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               name TEXT NOT NULL,
               phone_number TEXT NOT NULL UNIQUE,
-              age TEXT NOT NULL
+              age TEXT NOT NULL,
+              Food_id INTEGER,
+              FOREIGN KEY (Food_id) REFERENCES Food(id)
             )
         """
         cursor.execute(sql)
         conn.commit()
         print("Users table created")
+
+    def update(self):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        sql = f"""
+            UPDATE {self.TABLE_NAME} SET name=?, phone_number=?, age=?, Food_id=? WHERE id=?
+        """
+        cursor.execute(sql, (self.name, self.phone_number, self.age, self.Food_id, self.id))
+        conn.commit()
+        print(f"{self.name} updated")
+
+    def delete(self):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        sql = f"""
+            DELETE FROM {self.TABLE_NAME} WHERE id = ?
+        """
+        cursor.execute(sql, (self.id,))
+        conn.commit()
+        print(f"{self.name} deleted")
 
 User.create_table()
