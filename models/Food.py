@@ -1,4 +1,4 @@
-from db import get_db_connection
+from database.connection import get_db_connection
 
 class Food:
     TABLE_NAME = "Food"
@@ -23,6 +23,8 @@ class Food:
         self.id = cursor.lastrowid
         print(f"{self.name} saved")
 
+        
+
     def update(self):
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -42,22 +44,3 @@ class Food:
         cursor.execute(sql, (self.id,))
         conn.commit()
         print(f"{self.name} deleted")
-
-    @classmethod
-    def create_table(cls):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        sql = f"""
-            CREATE TABLE IF NOT EXISTS {cls.TABLE_NAME} (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              name TEXT NOT NULL,
-              category TEXT NOT NULL,
-              calories REAL NOT NULL,
-              descriptions TEXT NOT NULL,
-              Nutri_id INTEGER,
-              FOREIGN KEY (Nutri_id) REFERENCES Nutritionist(id)
-            )
-        """
-        cursor.execute(sql)
-        conn.commit()
-        print("Food table created")
