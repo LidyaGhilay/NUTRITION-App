@@ -1,46 +1,26 @@
+# models/Food.py
+
 from database.connection import get_db_connection
 
 class Food:
-    TABLE_NAME = "Food"
-
-    def __init__(self, id, name, category, calories, description, Nutri_id):
+    def __init__(self, id, name, category, calories, description):
         self.id = id
         self.name = name
         self.category = category
         self.calories = calories
         self.description = description
-        self.Nutri_id = Nutri_id
-
-    def save(self):
+          # Ensure this matches the column name in your database
+    
+    @classmethod
+    def get_all_foods(cls):
         conn = get_db_connection()
         cursor = conn.cursor()
-        sql = f"""
-            INSERT INTO {self.TABLE_NAME} (name, category, calories, descriptions, Nutri_id)
-            VALUES (?, ?, ?, ?, ?)
-        """
-        cursor.execute(sql, (self.name, self.category, self.calories, self.description, self.Nutri_id))
-        conn.commit()
-        self.id = cursor.lastrowid
-        print(f"{self.name} saved")
 
-        
+        cursor.execute("SELECT * FROM Food")
+        foods = cursor.fetchall()
 
-    def update(self):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        sql = f"""
-            UPDATE {self.TABLE_NAME} SET name=?, category=?, calories=?, descriptions=?, Nutri_id=? WHERE id=?
-        """
-        cursor.execute(sql, (self.name, self.category, self.calories, self.description, self.Nutri_id, self.id))
-        conn.commit()
-        print(f"{self.name} updated")
+        conn.close()
 
-    def delete(self):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        sql = f"""
-            DELETE FROM {self.TABLE_NAME} WHERE id = ?
-        """
-        cursor.execute(sql, (self.id,))
-        conn.commit()
-        print(f"{self.name} deleted")
+        return [cls(*food) for food in foods]
+
+    # Add other methods as needed, such as saving a new food item, updating, deleting, etc.

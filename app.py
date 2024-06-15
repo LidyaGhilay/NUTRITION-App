@@ -1,56 +1,22 @@
 from models.Nutritionist import Nutritionist
 from models.User import User
+from models.Food import Food
 from database.setup import create_table 
-
-def menu():
-    create_table()
-
-    print("Nutri-App-CLI")
-    print("Welcome to Nutritionist App!")
-    print("1. Register as a User")
-    print("2. Register as a Nutritionist")
-    print("3. Login")
-    print("4. Exit")
-
-def add_user():
-    name = input("Your Name:")
-    phone_number = input("Phone Number:")
-    age = input("Age:")
-    username = input("Username:")
-    password = input("Password:")
-    User.add_user(name, phone_number, age, username, password)
-    print("User added successfully!")
-
-def add_nutritionist():
-    name = input("Your Name:")
-    phone_number = input("Phone Number:")
-    email = input("Give your Email:")
-    consultation_fee = input("Consultation Fee:")
-    password = input("Password:")
-    Nutritionist.add_nutritionist(name, phone_number, email, consultation_fee, password)
-    print("You've Registered as a Nutritionist")
-
-def login():
-    username = input("Enter your username: ")
-    password = input("Enter your password: ")
-    
-    # Check if it's a user or a nutritionist logging in
-    user = User.authenticate(username, password)
-    nutritionist = Nutritionist.authenticate(username, password)
-
-    if user:
-        print("Logged in as user:", user.name)
-        # Add user-specific functionality here
-    elif nutritionist:
-        print("Logged in as nutritionist:", nutritionist.name)
-        # Add nutritionist-specific functionality here
-    else:
-        print("Invalid username or password")
-
+from database.setup import insert_initial_foods
 def main():
+    create_table()  # Ensure tables are created if they don't exist
+    insert_initial_foods()
     while True:
-        menu()
-        choice = input("Choose an option: ")
+        print("\nNutri-App-CLI")
+        print("Welcome to Nutritionist App!")
+        print("Select an option:")
+        print("1. Register as a User")
+        print("2. Register as a Nutritionist")
+        print("3. Login")
+        print("4. Exit")
+
+        choice = input("Enter your choice (1-4): ")
+
         if choice == "1":
             add_user()
         elif choice == "2":
@@ -63,10 +29,89 @@ def main():
         else:
             print("Invalid choice. Please choose a valid option.")
 
+
+def add_user():
+    print("\nRegister as a User")
+    name = input("Your Name: ")
+    phone_number = input("Phone Number: ")
+    age = input("Age: ")
+    username = input("Username: ")
+    password = input("Password: ")
+    
+    existing_user = User.find_by_username(username)
+    if existing_user:
+        print("Username already exists. Please choose a different username.")
+        return
+    
+    new_user = User(None, name, phone_number, age, username, password)
+    new_user.save()
+    
+    print("Registration successful!")
+
+def add_nutritionist():
+    print("\nRegister as a Nutritionist")
+    name = input("Your Name: ")
+    phone_number = input("Phone Number: ")
+    email = input("Email: ")
+    consultation_fee = input("Consultation Fee: ")
+    password = input("Password: ")
+
+    Nutritionist.add_nutritionist(name, phone_number, email, consultation_fee, password)
+    print("Registration successful!")
+
+def list_available_foods():
+    print("Available Foods:")
+    foods = Food.get_all_foods()
+    if foods:
+        for food in foods:
+            print(f"Name: {food.name}, Category: {food.category}, Calories: {food.calories}, Description: {food.description}")
+    else:
+        print("No foods available.")
+def update_user():
+    username = input("\nEnter your username: ")
+    password = input("Enter your current password: ")
+    
+    user = User.authenticate(username, password)
+    
+    if user:
+        new_password = input("Enter new password: ")
+        user.password = new_password
+        user.save()
+        print(f"Password updated for user: {username}")
+    else:
+        print("Invalid username or password.")
+
+def login():
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+    
+    user = User.authenticate(username, password)
+    nutritionist = Nutritionist.authenticate(username, password)
+
+    if user:
+        print("Logged in as user:", user.name)
+        while True:
+            print("\nSelect an option:")
+            print("1. View Available Foods")
+            print("2. Log out")
+            choice = input("Enter your choice (1-2): ")
+
+            if choice == "1":
+                list_available_foods()
+            elif choice == "2":
+                print("Logging out...")
+                break
+            else:
+                print("Invalid choice. Please choose a valid option.")
+
+    elif nutritionist:
+        print("Logged in as nutritionist:", nutritionist.name)
+        # Add nutritionist-specific functionality here
+    else:
+        print("Invalid username or password")
+
 if __name__ == '__main__':
     main()
-
-
 #  def main():
     
 #     User.create_table()

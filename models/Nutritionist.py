@@ -1,8 +1,7 @@
-import sqlite3
+# models/Nutritionist.py
 from database.connection import get_db_connection
 
 class Nutritionist:
-    
     TABLE_NAME = "Nutritionist"
 
     def __init__(self, id, name, phone_number, email, consultation_fee, password):
@@ -15,12 +14,23 @@ class Nutritionist:
 
     @staticmethod
     def add_nutritionist(name, phone_number, email, consultation_fee, password):
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("INSERT INTO Nutritionist (name, phone_number, email, consultation_fee, password) VALUES (?, ?, ?, ?, ?)", 
+       conn = get_db_connection()
+       cur = conn.cursor()
+
+    # Check if the phone_number already exists
+       cur.execute("SELECT * FROM Nutritionist WHERE phone_number = ?", (phone_number,))
+       existing_nutritionist = cur.fetchone()
+
+       if existing_nutritionist:
+        print(f"Nutritionist with phone number '{phone_number}' already exists.")
+       else:
+        # Insert new nutritionist
+        cur.execute("INSERT INTO Nutritionist (name, phone_number, email, consultation_fee, password) VALUES (?, ?, ?, ?, ?)",
                     (name, phone_number, email, consultation_fee, password))
         conn.commit()
-        conn.close()  # Don't forget to close the connection
+        print("Nutritionist registered successfully.")
+
+        conn.close()
 
     @staticmethod
     def authenticate(email, password):
@@ -33,6 +43,7 @@ class Nutritionist:
             return Nutritionist(*nutritionist)
         else:
             return None
+
 
    
    
