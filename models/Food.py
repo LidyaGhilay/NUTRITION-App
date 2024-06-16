@@ -9,8 +9,7 @@ class Food:
         self.category = category
         self.calories = calories
         self.description = description
-          # Ensure this matches the column name in your database
-    
+          
     @classmethod
     def get_all_foods(cls):
         conn = get_db_connection()
@@ -23,4 +22,4 @@ class Food:
 
         return [cls(*food) for food in foods]
 
-    # Add other methods as needed, such as saving a new food item, updating, deleting, etc.
+    

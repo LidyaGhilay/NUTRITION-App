@@ -1,4 +1,4 @@
-# Importing necessary libraries
+
 import sqlite3
 from database.setup import create_table, insert_initial_foods
 from database.connection import get_db_connection
@@ -6,7 +6,7 @@ from models.Nutritionist import Nutritionist
 from models.User import User
 from models.Food import Food
 
-# ANSI escape sequences for text styling
+
 class Style:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -17,10 +17,10 @@ class Style:
     UNDERLINE = '\033[4m'
     END = '\033[0m'
 
-# Function definitions
+
 def main():
-    create_table()  # Ensure tables are created if they don't exist
-    insert_initial_foods()  # Insert initial data into tables
+    create_table()  
+    insert_initial_foods() 
 
     while True:
         print_menu()
@@ -39,13 +39,13 @@ def main():
             print(f"\n{Style.FAIL}Invalid choice. Please choose a valid option.{Style.END}")
 
 def print_menu():
-    print(f"\n{Style.HEADER + Style.BOLD}Nutri-App-CLI{Style.END}")  # Bold and magenta header
-    print(f"{Style.OKBLUE}Welcome to Nutritionist App!{Style.END}")  # Blue subtitle
+    print(f"\n{Style.HEADER + Style.BOLD}Nutri-App-CLI{Style.END}")  
+    print(f"{Style.OKBLUE}Welcome to Nutritionist App!{Style.END}")  
     print("\nSelect an option:")
-    print(f"{Style.OKGREEN}1. Register as a User{Style.END}")  # Green options
-    print(f"{Style.OKGREEN}2. Register as a Nutritionist{Style.END}")  # Green options
-    print(f"{Style.OKGREEN}3. Login{Style.END}")  # Green options
-    print(f"{Style.FAIL}4. Exit{Style.END}")  # Red option
+    print(f"{Style.OKGREEN}1. Register as a User{Style.END}")  
+    print(f"{Style.OKGREEN}2. Register as a Nutritionist{Style.END}")  
+    print(f"{Style.OKGREEN}3. Login{Style.END}") 
+    print(f"{Style.FAIL}4. Exit{Style.END}") 
 
 def handle_register_user():
     while True:
@@ -80,7 +80,7 @@ def handle_register_user():
         try:
             new_user.save()
             print(f"{Style.OKGREEN}Registration successful!{Style.END}")
-            break  # Exit loop after successful registration
+            break  
         except Exception as e:
             print(f"{Style.FAIL}Error: {e}{Style.END}")
             break
@@ -117,7 +117,7 @@ def handle_register_nutritionist():
         try:
             Nutritionist.add_nutritionist(name, phone_number, email, consultation_fee, password)
             print(f"{Style.OKGREEN}Registration successful!{Style.END}")
-            break  # Exit loop after successful registration
+            break  
         except Exception as e:
             print(f"{Style.FAIL}Error: {e}{Style.END}")
             break
@@ -138,20 +138,20 @@ def handle_login():
         if user:
             print(f"Logged in as user: {user.name}")
             user_menu(user)
-            break  # Exit loop after successful login
+            break  
         elif nutritionist:
             print(f"Logged in as nutritionist: {nutritionist.name}")
             nutritionist_menu(nutritionist)
-            break  # Exit loop after successful login
+            break  
         else:
             print(f"{Style.FAIL}Invalid username or password{Style.END}")
 
 def user_menu(user):
     while True:
         print("\nSelect an option:")
-        print(f"{Style.OKGREEN}1. View Available Foods{Style.END}")  # Green option
-        print(f"{Style.OKGREEN}2. Update Password{Style.END}")  # Green option
-        print(f"{Style.FAIL}3. Back to Main Menu{Style.END}")  # Red option
+        print(f"{Style.OKGREEN}1. View Available Foods{Style.END}")  
+        print(f"{Style.OKGREEN}2. Update Password{Style.END}") 
+        print(f"{Style.FAIL}3. Back to Main Menu{Style.END}")  
         choice = input("Enter your choice (1-3): ")
 
         if choice == "1":
@@ -183,18 +183,18 @@ def nutritionist_menu(nutritionist):
     while True:
         print(f"\n{Style.BOLD}Logged in as nutritionist: {nutritionist.name}{Style.END}")
         print("\nSelect an option:")
-        print(f"{Style.OKGREEN}1. View Client List{Style.END}")  # Green option
-        print(f"{Style.OKBLUE}2. Consultation Date{Style.END}")  # Blue option
-        print(f"{Style.OKBLUE}3. View Client Progress{Style.END}")  # Blue option
-        print(f"{Style.OKGREEN}4. Update Password{Style.END}")  # Green option
-        print(f"{Style.FAIL}5. Back to Main Menu{Style.END}")  # Red option
+        print(f"{Style.OKGREEN}1. View Client List{Style.END}")  
+        print(f"{Style.OKBLUE}2. Consultation Date{Style.END}")  
+        print(f"{Style.OKBLUE}3. View Client Progress{Style.END}")  
+        print(f"{Style.OKGREEN}4. Update Password{Style.END}")  
+        print(f"{Style.FAIL}5. Back to Main Menu{Style.END}")  
 
         choice = input("Enter your choice (1-5): ")
 
         if choice == "1":
             handle_view_client_list(nutritionist)
         elif choice == "2":
-            enter_consultation_date(nutritionist)
+            handle_enter_consultation_date(nutritionist)
         elif choice == "3":
             view_client_progress(nutritionist)
         elif choice == "4":
@@ -206,27 +206,25 @@ def nutritionist_menu(nutritionist):
             print(f"{Style.FAIL}Invalid choice. Please choose a valid option.{Style.END}")
 
 def view_client_progress(nutritionist):
-    # Simulated client progress data (replace with actual database interaction)
+    
     client_data = [
         {"name": "Client A", "progress": "Making good progress"},
         {"name": "Client B", "progress": "Needs more improvement"},
         {"name": "Client C", "progress": "No progress data available"}
-        # Add more client entries as needed
+        
     ]
 
-    # Display client progress
+    
     print(f"\n{Style.BOLD}Client Progress:{Style.END}")
     for client in client_data:
         print(f"{Style.OKBLUE}Client: {client['name']}, Progress: {client['progress']}{Style.END}")
 
-
-
 def handle_view_client_list(nutritionist):
-    # Simulated client data
+    
     clients = [
-        {"name": "Client A", "phone_number": "123-456-7890", "email": "client_a@example.com"},
-        {"name": "Client B", "phone_number": "234-567-8901", "email": "client_b@example.com"},
-        {"name": "Client C", "phone_number": "345-678-9012", "email": "client_c@example.com"},
+        {"name": "John Doe", "phone_number": "123-456-7890", "email": "client_a@example.com"},
+        {"name": "Rose lyn", "phone_number": "234-567-8901", "email": "client_b@example.com"},
+        {"name": "Bonito Zerom", "phone_number": "345-678-9012", "email": "client_c@example.com"},
     ]
 
     if clients:
@@ -236,24 +234,39 @@ def handle_view_client_list(nutritionist):
     else:
         print(f"{Style.FAIL}No clients found.{Style.END}")
 
-
-    def enter_consultation_date(nutritionist):
-    client_name = input("Enter client's name: ")
-    consultation_date = input("Enter consultation date (YYYY-MM-DD): ")
-
-    # Simulated update process (replace with actual database interaction)
-    client_found = False
-    for client in nutritionist.clients:
-        if client.name == client_name:
-            client.consultation_date = consultation_date
-            client_found = True
-            break
+def handle_enter_consultation_date(nutritionist):
     
-    if client_found:
-        print(f"Consultation date {consultation_date} recorded for client {client_name}")
-    else:
-        print(f"{Style.FAIL}Client '{client_name}' not found.{Style.END}")
+    clients = [
+        {"name": "John Doe"},
+        {"name": "Rose lyn"},
+        {"name": "Bonito Zerom"}
+       
+    ]
 
+    
+    print(f"\n{Style.BOLD}Select a client:{Style.END}")
+    for idx, client in enumerate(clients, start=1):
+        print(f"{idx}. {client['name']}")
+
+    choice = input("\nEnter client's number (1-{len(clients)}): ")
+    try:
+        client_index = int(choice) - 1
+        if 0 <= client_index < len(clients):
+            client_name = clients[client_index]['name']
+            consultation_date = input("Enter consultation date (YYYY-MM-DD): ")
+
+            
+            print(f"Consultation date {consultation_date} recorded for client {client_name}")
+        else:
+            print(f"{Style.FAIL}Invalid client number. Please choose a valid option.{Style.END}")
+    except ValueError:
+        print(f"{Style.FAIL}Invalid input. Please enter a number.{Style.END}")
+
+def update_nutritionist_password(nutritionist):
+    new_password = input("Enter new password: ")
+    nutritionist.password = new_password
+    nutritionist.save()
+    print(f"{Style.OKGREEN}Password updated for nutritionist: {nutritionist.name}{Style.END}")
 
 if __name__ == "__main__":
     main()

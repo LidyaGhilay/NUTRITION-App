@@ -29,7 +29,7 @@ class User:
         user_data = cur.fetchone()
         conn.close()
         if user_data:
-            return cls(*user_data)  # Unpacks the tuple to instantiate the User object
+            return cls(*user_data) 
         else:
             return None
 
@@ -41,15 +41,13 @@ class User:
         user_data = cur.fetchone()
         conn.close()
         
-        if user_data and user_data[5] == password:  # user_data[5] is the password field index in the database
-            return cls(*user_data)  # Unpacks the tuple to instantiate the User object
+        if user_data and user_data[5] == password:  
+            return cls(*user_data)  
         else:
             return None
 
-    # Add other methods as needed
+    
 
-
-    # Add other methods as needed
 
 
 

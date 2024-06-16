@@ -26,7 +26,7 @@ class Nutritionist:
                     'name': client[1],
                     'phone_number': client[2],
                     'email': client[3]
-                    # Add more fields as needed
+                   
                 }
                 client_list.append(client_dict)
 
