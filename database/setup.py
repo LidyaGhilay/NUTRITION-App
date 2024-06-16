@@ -89,7 +89,7 @@ def insert_initial_foods():
 
         cursor.executemany("INSERT INTO Nutritionist (name, phone_number, email, consultation_fee, password) VALUES (?, ?, ?, ?, ?)", nutritionists)
 
-    # Insert initial Client data (associated with nutritionists) if not exists
+   
     cursor.execute("SELECT COUNT(*) FROM Client")
     count = cursor.fetchone()[0]
     if count == 0:
