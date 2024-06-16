@@ -1,11 +1,13 @@
+import sqlite3
+from database.setup import create_table, insert_initial_foods
+from database.connection import get_db_connection
 from models.Nutritionist import Nutritionist
 from models.User import User
 from models.Food import Food
-from database.setup import create_table, insert_initial_foods
 
 def main():
     create_table()  # Ensure tables are created if they don't exist
-    insert_initial_foods()
+    insert_initial_foods()  # Insert initial data into tables
 
     while True:
         print_menu()
@@ -35,40 +37,87 @@ def print_menu():
 def handle_register_user():
     while True:
         print("\nRegister as a User")
+        print("Enter 'back' to return to main menu.")
         name = input("Your Name: ")
-        phone_number = input("Phone Number: ")
-        age = input("Age: ")
-        username = input("Username: ")
-        password = input("Password: ")
+        if name.lower() == 'back':
+            return
         
+        phone_number = input("Phone Number: ")
+        if phone_number.lower() == 'back':
+            return
+        
+        age = input("Age: ")
+        if age.lower() == 'back':
+            return
+        
+        username = input("Username: ")
+        if username.lower() == 'back':
+            return
+        
+        password = input("Password: ")
+        if password.lower() == 'back':
+            return
+
         existing_user = User.find_by_username(username)
         if existing_user:
             print("Username already exists. Please choose a different username.")
             continue
         
         new_user = User(None, name, phone_number, age, username, password)
-        new_user.save()
-        
-        print("Registration successful!")
-        break  # Exit loop after successful registration
+        try:
+            new_user.save()
+            print("Registration successful!")
+            break  # Exit loop after successful registration
+        except Exception as e:
+            print(f"Error: {e}")
+            break
 
 def handle_register_nutritionist():
     while True:
         print("\nRegister as a Nutritionist")
+        print("Enter 'back' to return to main menu.")
         name = input("Your Name: ")
+        if name.lower() == 'back':
+            return
+        
         phone_number = input("Phone Number: ")
+        if phone_number.lower() == 'back':
+            return
+        
         email = input("Email: ")
+        if email.lower() == 'back':
+            return
+        
         consultation_fee = input("Consultation Fee: ")
+        if consultation_fee.lower() == 'back':
+            return
+        
         password = input("Password: ")
+        if password.lower() == 'back':
+            return
 
-        Nutritionist.add_nutritionist(name, phone_number, email, consultation_fee, password)
-        print("Registration successful!")
-        break  # Exit loop after successful registration
+        existing_nutritionist = Nutritionist.find_by_phone_number(phone_number)
+        if existing_nutritionist:
+            print("A nutritionist with this phone number already exists.")
+            continue
+
+        try:
+            Nutritionist.add_nutritionist(name, phone_number, email, consultation_fee, password)
+            print("Registration successful!")
+            break  # Exit loop after successful registration
+        except Exception as e:
+            print(f"Error: {e}")
+            break
 
 def handle_login():
     while True:
         username = input("Enter your username: ")
+        if username.lower() == 'back':
+            return
+        
         password = input("Enter your password: ")
+        if password.lower() == 'back':
+            return
         
         user = User.authenticate(username, password)
         nutritionist = Nutritionist.authenticate(username, password)
@@ -122,63 +171,35 @@ def nutritionist_menu(nutritionist):
         print(f"\nLogged in as nutritionist: {nutritionist.name}")
         print("Select an option:")
         print("1. View Client List")
-        print("2. Update Client Information")
-        print("3. Schedule Consultations")
-        print("4. View Client Progress")
-        print("5. Manage Meal Plans")
-        print("6. Send Messages or Recommendations")
-        print("7. Access Nutrition Resources")
-        print("8. Log out")
+        print("2. Consultation Date")
+        print("3. View Client Progress")
+        print("4. Update Password")
+        print("5. Back to Main Menu")
 
-        choice = input("Enter your choice (1-8): ")
+        choice = input("Enter your choice (1-5): ")
 
         if choice == "1":
-            view_client_list(nutritionist)
+            handle_view_client_list(nutritionist)
         elif choice == "2":
-            update_client_info(nutritionist)
+            enter_consultation_date(nutritionist)
         elif choice == "3":
-            schedule_consultations(nutritionist)
-        elif choice == "4":
             view_client_progress(nutritionist)
+        elif choice == "4":
+            update_nutritionist_password(nutritionist)
         elif choice == "5":
-            manage_meal_plans(nutritionist)
-        elif choice == "6":
-            send_messages(nutritionist)
-        elif choice == "7":
-            access_nutrition_resources()
-        elif choice == "8":
-            print("Logging out...")
+            print("Returning to main menu...")
             break
         else:
             print("Invalid choice. Please choose a valid option.")
 
-def view_client_list(nutritionist):
-    # Placeholder for functionality to view client list
-    pass
+def handle_view_client_list(nutritionist):
+    clients = nutritionist.get_client_list()
+    if clients:
+        print("\nClient List:")
+        for client in clients:
+            print(f"Name: {client['name']}, Phone Number: {client['phone_number']}, Email: {client['email']}")
+    else:
+        print("No clients found.")
 
-def update_client_info(nutritionist):
-    # Placeholder for functionality to update client information
-    pass
-
-def schedule_consultations(nutritionist):
-    # Placeholder for functionality to schedule consultations
-    pass
-
-def view_client_progress(nutritionist):
-    # Placeholder for functionality to view client progress
-    pass
-
-def manage_meal_plans(nutritionist):
-    # Placeholder for functionality to manage meal plans
-    pass
-
-def send_messages(nutritionist):
-    # Placeholder for functionality to send messages or recommendations
-    pass
-
-def access_nutrition_resources():
-    # Placeholder for functionality to access nutrition resources
-    pass
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

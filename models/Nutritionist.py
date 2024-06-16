@@ -1,4 +1,3 @@
-# models/Nutritionist.py
 from database.connection import get_db_connection
 
 class Nutritionist:
@@ -12,25 +11,64 @@ class Nutritionist:
         self.consultation_fee = consultation_fee
         self.password = password
 
+    def get_client_list(self):
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        try:
+            cur.execute("SELECT * FROM Client WHERE nutritionist_id = ?", (self.id,))
+            clients = cur.fetchall()
+
+            client_list = []
+            for client in clients:
+                client_dict = {
+                    'id': client[0],
+                    'name': client[1],
+                    'phone_number': client[2],
+                    'email': client[3]
+                    # Add more fields as needed
+                }
+                client_list.append(client_dict)
+
+            return client_list
+        except Exception as e:
+            print(f"Error fetching clients: {e}")
+            return []
+        finally:
+            conn.close()
+
+    @staticmethod
+    def find_by_phone_number(phone_number):
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM Nutritionist WHERE phone_number = ?", (phone_number,))
+        nutritionist = cur.fetchone()
+        conn.close()
+        if nutritionist:
+            return Nutritionist(*nutritionist)
+        else:
+            return None
+
     @staticmethod
     def add_nutritionist(name, phone_number, email, consultation_fee, password):
-       conn = get_db_connection()
-       cur = conn.cursor()
+        conn = get_db_connection()
+        cur = conn.cursor()
 
-    # Check if the phone_number already exists
-       cur.execute("SELECT * FROM Nutritionist WHERE phone_number = ?", (phone_number,))
-       existing_nutritionist = cur.fetchone()
+        try:
+            cur.execute("SELECT * FROM Nutritionist WHERE phone_number = ?", (phone_number,))
+            existing_nutritionist = cur.fetchone()
 
-       if existing_nutritionist:
-        print(f"Nutritionist with phone number '{phone_number}' already exists.")
-       else:
-        # Insert new nutritionist
-        cur.execute("INSERT INTO Nutritionist (name, phone_number, email, consultation_fee, password) VALUES (?, ?, ?, ?, ?)",
-                    (name, phone_number, email, consultation_fee, password))
-        conn.commit()
-        print("Nutritionist registered successfully.")
-
-        conn.close()
+            if existing_nutritionist:
+                print(f"Nutritionist with phone number '{phone_number}' already exists.")
+            else:
+                cur.execute("INSERT INTO Nutritionist (name, phone_number, email, consultation_fee, password) VALUES (?, ?, ?, ?, ?)",
+                            (name, phone_number, email, consultation_fee, password))
+                conn.commit()
+                print("Nutritionist registered successfully.")
+        except Exception as e:
+            print(f"Error adding nutritionist: {e}")
+        finally:
+            conn.close()
 
     @staticmethod
     def authenticate(email, password):
@@ -43,81 +81,3 @@ class Nutritionist:
             return Nutritionist(*nutritionist)
         else:
             return None
-
-
-   
-   
-   
-    # def save(self):
-    #     conn = get_db_connection()
-    #     cursor = conn.cursor()
-    #     sql = f"""
-    #         INSERT INTO {self.TABLE_NAME} (name, phone_number, email, consultation_fee)
-    #         VALUES (?, ?, ?, ?)
-    #     """
-    #     cursor.execute(sql, (self.name, self.phone_number, self.email, self.consultation_fee))
-    #     conn.commit()
-    #     self.id = cursor.lastrowid
-    #     print(f"{self.name} saved")
-
-   
-        
-
-    # def dictionary(self):
-    #     return {
-    #         "id": self.id,
-    #         "name": self.name,
-    #         "phone_number": self.phone_number,
-    #         "email": self.email,
-    #         "consultation_fee": self.consultation_fee
-    #     }
-
-    # @classmethod
-    # def drop_table(cls):
-    #     conn = get_db_connection()
-    #     cursor = conn.cursor()
-    #     sql = f"""
-    #         DROP TABLE IF EXISTS {cls.TABLE_NAME}
-    #     """
-    #     cursor.execute(sql)
-    #     conn.commit()
-
-    # def update(self):
-    #     conn = get_db_connection()
-    #     cursor = conn.cursor()
-    #     sql = f"""
-    #         UPDATE {self.TABLE_NAME} SET name=?, phone_number=?, email=?, consultation_fee=? WHERE id=?
-    #     """
-    #     cursor.execute(sql, (self.name, self.phone_number, self.email, self.consultation_fee, self.id))
-    #     conn.commit()
-    #     print(f"{self.name} updated")
-
-    # def delete(self):
-    #     conn = get_db_connection()
-    #     cursor = conn.cursor()
-    #     sql = f"""
-    #         DELETE FROM {self.TABLE_NAME} WHERE id = ?
-    #     """
-    #     cursor.execute(sql, (self.id,))
-    #     conn.commit()
-    #     print(f"{self.name} deleted")
-
-    # @classmethod
-    # def find(cls):
-    #     conn = get_db_connection()
-    #     cursor = conn.cursor()
-    #     sql = f"""
-    #         SELECT * FROM {cls.TABLE_NAME}
-    #     """
-    #     rows = cursor.execute(sql).fetchall()
-    #     return [
-    #         cls.row_to_instance(row).dictionary() for row in rows
-    #     ]
-
-    # @classmethod
-    # def row_to_instance(cls, row):
-    #     if row is None:
-    #         return None
-    #     nutritionist = cls(None, row[1], row[2], row[3], row[4])
-    #     nutritionist.id = row[0]
-    #     return nutritionist
