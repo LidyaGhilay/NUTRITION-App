@@ -1,11 +1,9 @@
-
 import sqlite3
 from database.setup import create_table, insert_initial_foods
 from database.connection import get_db_connection
 from models.Nutritionist import Nutritionist
 from models.User import User
 from models.Food import Food
-
 
 class Style:
     HEADER = '\033[95m'
@@ -16,7 +14,6 @@ class Style:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     END = '\033[0m'
-
 
 def main():
     create_table()  
@@ -124,7 +121,9 @@ def handle_register_nutritionist():
 
 def handle_login():
     while True:
-        username = input("Enter your username: ")
+        print(f"\n\033[91mback\033[0m at any time to return to the main menu.")
+
+        username = input("\nEnter your username: ")
         if username.lower() == 'back':
             return
         
@@ -136,15 +135,15 @@ def handle_login():
         nutritionist = Nutritionist.authenticate(username, password)
 
         if user:
-            print(f"Logged in as user: {user.name}")
+            print(f"\nLogged in as user: {user.name}")
             user_menu(user)
             break  
         elif nutritionist:
-            print(f"Logged in as nutritionist: {nutritionist.name}")
+            print(f"\nLogged in as nutritionist: {nutritionist.name}")
             nutritionist_menu(nutritionist)
             break  
         else:
-            print(f"{Style.FAIL}Invalid username or password{Style.END}")
+            print(f"\nInvalid username or password")
 
 def user_menu(user):
     while True:
@@ -206,21 +205,17 @@ def nutritionist_menu(nutritionist):
             print(f"{Style.FAIL}Invalid choice. Please choose a valid option.{Style.END}")
 
 def view_client_progress(nutritionist):
-    
     client_data = [
         {"name": "Client A", "progress": "Making good progress"},
         {"name": "Client B", "progress": "Needs more improvement"},
-        {"name": "Client C", "progress": "No progress data available"}
-        
+        {"name": "Client C", "progress": "No progress data available"}  
     ]
 
-    
     print(f"\n{Style.BOLD}Client Progress:{Style.END}")
     for client in client_data:
         print(f"{Style.OKBLUE}Client: {client['name']}, Progress: {client['progress']}{Style.END}")
 
 def handle_view_client_list(nutritionist):
-    
     clients = [
         {"name": "John Doe", "phone_number": "123-456-7890", "email": "client_a@example.com"},
         {"name": "Rose lyn", "phone_number": "234-567-8901", "email": "client_b@example.com"},
@@ -235,15 +230,12 @@ def handle_view_client_list(nutritionist):
         print(f"{Style.FAIL}No clients found.{Style.END}")
 
 def handle_enter_consultation_date(nutritionist):
-    
     clients = [
         {"name": "John Doe"},
         {"name": "Rose lyn"},
         {"name": "Bonito Zerom"}
-       
     ]
 
-    
     print(f"\n{Style.BOLD}Select a client:{Style.END}")
     for idx, client in enumerate(clients, start=1):
         print(f"{idx}. {client['name']}")
@@ -255,7 +247,6 @@ def handle_enter_consultation_date(nutritionist):
             client_name = clients[client_index]['name']
             consultation_date = input("Enter consultation date (YYYY-MM-DD): ")
 
-            
             print(f"Consultation date {consultation_date} recorded for client {client_name}")
         else:
             print(f"{Style.FAIL}Invalid client number. Please choose a valid option.{Style.END}")
@@ -267,32 +258,6 @@ def update_nutritionist_password(nutritionist):
     nutritionist.password = new_password
     nutritionist.save()
     print(f"{Style.OKGREEN}Password updated for nutritionist: {nutritionist.name}{Style.END}")
-
-def handle_login():
-    while True:
-        print(f"\n\033[91mback\033[0m at any time to return to the main menu.")
-
-        username = input("\nEnter your username: ")
-        if username.lower() == 'back':
-            return
-        
-        password = input("Enter your password: ")
-        if password.lower() == 'back':
-            return
-        
-        user = User.authenticate(username, password)
-        nutritionist = Nutritionist.authenticate(username, password)
-
-        if user:
-            print(f"\nLogged in as user: {user.name}")
-            user_menu(user)
-            break  
-        elif nutritionist:
-            print(f"\nLogged in as nutritionist: {nutritionist.name}")
-            nutritionist_menu(nutritionist)
-            break  
-        else:
-            print(f"\nInvalid username or password")
 
 if __name__ == "__main__":
     main()
