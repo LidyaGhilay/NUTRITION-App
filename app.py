@@ -206,9 +206,9 @@ def nutritionist_menu(nutritionist):
 
 def view_client_progress(nutritionist):
     client_data = [
-        {"name": "Client A", "progress": "Making good progress"},
-        {"name": "Client B", "progress": "Needs more improvement"},
-        {"name": "Client C", "progress": "No progress data available"}  
+        {"name": "John Doe", "progress": "Making good progress"},
+        {"name": "Rose lyn", "progress": "Needs more improvement"},
+        {"name": "Bonito Zerom", "progress": "No progress data available"}  
     ]
 
     print(f"\n{Style.BOLD}Client Progress:{Style.END}")
