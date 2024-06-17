@@ -268,5 +268,31 @@ def update_nutritionist_password(nutritionist):
     nutritionist.save()
     print(f"{Style.OKGREEN}Password updated for nutritionist: {nutritionist.name}{Style.END}")
 
+def handle_login():
+    while True:
+        print(f"\n\033[91mback\033[0m at any time to return to the main menu.")
+
+        username = input("\nEnter your username: ")
+        if username.lower() == 'back':
+            return
+        
+        password = input("Enter your password: ")
+        if password.lower() == 'back':
+            return
+        
+        user = User.authenticate(username, password)
+        nutritionist = Nutritionist.authenticate(username, password)
+
+        if user:
+            print(f"\nLogged in as user: {user.name}")
+            user_menu(user)
+            break  
+        elif nutritionist:
+            print(f"\nLogged in as nutritionist: {nutritionist.name}")
+            nutritionist_menu(nutritionist)
+            break  
+        else:
+            print(f"\nInvalid username or password")
+
 if __name__ == "__main__":
     main()
