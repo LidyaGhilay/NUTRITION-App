@@ -240,7 +240,7 @@ def handle_enter_consultation_date(nutritionist):
     for idx, client in enumerate(clients, start=1):
         print(f"{idx}. {client['name']}")
 
-    choice = input("\nEnter client's number (1-{len(clients)}): ")
+    choice = input(f"\nEnter client's number (1-{len(clients)}): ")
     try:
         client_index = int(choice) - 1
         if 0 <= client_index < len(clients):
