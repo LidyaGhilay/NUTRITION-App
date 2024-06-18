@@ -261,3 +261,4 @@ def update_nutritionist_password(nutritionist):
 
 if __name__ == "__main__":
     main()
+    
