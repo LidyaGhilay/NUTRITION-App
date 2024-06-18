@@ -1,4 +1,4 @@
-# PROJECT NAME: REAL-ESTATE-MANAGEMENT-SYSTEM-APP
+# PROJECT-TITLE: NUTRITION APP
 Date:
 16/06/2024
 
@@ -6,11 +6,12 @@ Author:
 Lidya Ghilay
 
 Description:
-This is a Nutrition app where a person can log in and see the recommended foods from a nutritionist 
+This is a CLI Nutrition app where a person can log in and see the recommended foods from a nutritionist 
 
 
-Technology used:
-python 3.10.12 SQLite
+Technologies used:
+python  
+SQLite
 
  
 
